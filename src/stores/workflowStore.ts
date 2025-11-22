@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import type { Workflow, WorkflowNode, Trigger, NodeType, TriggerType } from '../types/workflow';
 import { applyNodeChanges, applyEdgeChanges } from 'reactflow';
 import type { Node, Edge, NodeChange, EdgeChange } from 'reactflow';
+import { workflowsApi } from '../api/workflows';
 
 interface WorkflowStore {
   // Current workflow being edited
@@ -46,6 +47,8 @@ interface WorkflowStore {
   // Persistence
   markDirty: () => void;
   markClean: () => void;
+  saveWorkflow: () => Promise<void>;
+  loadWorkflows: () => Promise<void>;
 }
 
 export const useWorkflowStore = create<WorkflowStore>((set, get) => ({
@@ -382,4 +385,34 @@ export const useWorkflowStore = create<WorkflowStore>((set, get) => ({
 
   markDirty: () => set({ isDirty: true }),
   markClean: () => set({ isDirty: false }),
+
+  saveWorkflow: async () => {
+    const { workflow } = get();
+    if (!workflow) return;
+
+    try {
+      if (workflow.id) {
+        // Update existing workflow
+        await workflowsApi.updateWorkflow(workflow.id, workflow);
+      } else {
+        // Create new workflow
+        const created = await workflowsApi.createWorkflow(workflow);
+        set({ workflow: { ...workflow, id: created.id } });
+      }
+      set({ isDirty: false });
+    } catch (error) {
+      console.error('Failed to save workflow:', error);
+      throw error;
+    }
+  },
+
+  loadWorkflows: async () => {
+    try {
+      const workflows = await workflowsApi.getWorkflows();
+      console.log('Loaded workflows:', workflows);
+      // You can add logic to select a workflow here
+    } catch (error) {
+      console.error('Failed to load workflows:', error);
+    }
+  },
 }));

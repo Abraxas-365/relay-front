@@ -29,6 +29,7 @@ export const WorkflowCanvas = () => {
     selectNode,
     isDirty,
     workflow,
+    saveWorkflow,
   } = useWorkflowStore();
 
   const handleNodeClick = useCallback(
@@ -42,9 +43,14 @@ export const WorkflowCanvas = () => {
     selectNode(null);
   }, [selectNode]);
 
-  const handleSave = () => {
-    // TODO: Implement save functionality
-    console.log('Saving workflow:', workflow);
+  const handleSave = async () => {
+    try {
+      await saveWorkflow();
+      alert('Workflow saved successfully!');
+    } catch (error) {
+      console.error('Failed to save workflow:', error);
+      alert('Failed to save workflow. Check console for details.');
+    }
   };
 
   const handleTest = () => {
