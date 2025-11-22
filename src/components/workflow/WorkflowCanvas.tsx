@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import ReactFlow, {
   Background,
   Controls,
@@ -14,11 +14,6 @@ import WorkflowNode from '../nodes/WorkflowNode';
 import { Save, Play } from 'lucide-react';
 import { Button } from '../ui/button';
 
-const nodeTypes = {
-  trigger: TriggerNode,
-  workflow: WorkflowNode,
-};
-
 export const WorkflowCanvas = () => {
   const {
     nodes,
@@ -31,6 +26,15 @@ export const WorkflowCanvas = () => {
     workflow,
     saveWorkflow,
   } = useWorkflowStore();
+
+  // Memoize nodeTypes to prevent React Flow warning
+  const nodeTypes = useMemo(
+    () => ({
+      trigger: TriggerNode,
+      workflow: WorkflowNode,
+    }),
+    []
+  );
 
   const handleNodeClick = useCallback(
     (_event: React.MouseEvent, node: any) => {
