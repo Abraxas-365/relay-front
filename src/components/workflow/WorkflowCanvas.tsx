@@ -62,6 +62,41 @@ export const WorkflowCanvas = () => {
     console.log('Testing workflow:', workflow);
   };
 
+  // Show welcome screen if no workflow
+  if (!workflow) {
+    return (
+      <div className="flex-1 flex items-center justify-center bg-background">
+        <div className="text-center max-w-md">
+          <div className="mb-6">
+            <div className="w-24 h-24 mx-auto bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center">
+              <svg
+                className="w-12 h-12 text-white"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M13 10V3L4 14h7v7l9-11h-7z"
+                />
+              </svg>
+            </div>
+          </div>
+          <h2 className="text-2xl font-bold mb-2">Welcome to Relay Workflow Builder</h2>
+          <p className="text-muted-foreground mb-6">
+            Create powerful automation workflows with a visual editor. Get started by creating
+            your first workflow.
+          </p>
+          <div className="text-sm text-muted-foreground">
+            Click "New Workflow" in the top right to begin
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex-1 relative">
       <ReactFlow
@@ -108,16 +143,14 @@ export const WorkflowCanvas = () => {
           </Button>
         </Panel>
 
-        {workflow && (
-          <Panel position="top-left">
-            <div className="bg-card border border-border rounded-lg p-4 shadow-md">
-              <h2 className="text-lg font-semibold">{workflow.name}</h2>
-              {workflow.description && (
-                <p className="text-sm text-muted-foreground mt-1">{workflow.description}</p>
-              )}
-            </div>
-          </Panel>
-        )}
+        <Panel position="top-left">
+          <div className="bg-card border border-border rounded-lg p-4 shadow-md">
+            <h2 className="text-lg font-semibold">{workflow.name}</h2>
+            {workflow.description && (
+              <p className="text-sm text-muted-foreground mt-1">{workflow.description}</p>
+            )}
+          </div>
+        </Panel>
       </ReactFlow>
     </div>
   );
